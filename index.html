@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hirely – practice job board</title>
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--ink:#17261f;--mute:#5d6e65;--line:#d5dfd9;--acc:#0f6b4f;--accT:#fff;--ok:#0f6b4f;--no:#b5472f;--hl:#e6f2ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a16;--card:#17241e;--ink:#e8f0eb;--mute:#93a79c;--line:#2b3d34;--acc:#4fc79b;--accT:#08140f;--ok:#4fc79b;--no:#f08b73;--hl:#1c3328}}
+:root[data-theme="dark"]{--bg:#101a16;--card:#17241e;--ink:#e8f0eb;--mute:#93a79c;--line:#2b3d34;--acc:#4fc79b;--accT:#08140f;--ok:#4fc79b;--no:#f08b73;--hl:#1c3328}
+*{box-sizing:border-box}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Source Serif 4",Georgia,serif}
+h1,h2,h3,button,input,select,.sans{font-family:"Inter","Helvetica Neue",Arial,sans-serif}
+header{padding:20px 20px 8px;max-width:960px;margin:0 auto}
+.logo{font:800 26px "Inter",sans-serif;letter-spacing:-.5px;color:var(--acc)}
+.sub{color:var(--mute);margin:2px 0 0;font-size:14px}
+main{max-width:960px;margin:0 auto;padding:12px 20px 60px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 16px}
+input,select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:15px}
+input{flex:1;min-width:180px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.job{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;text-align:left;color:inherit;font:inherit;display:block;width:100%}
+.job:hover,.job:focus-visible{border-color:var(--acc);outline:2px solid var(--acc);outline-offset:1px}
+.job h3{margin:0 0 2px;font-size:17px}
+.co{color:var(--acc);font-weight:600;font-size:14px}
+.meta{color:var(--mute);font-size:13px;margin-top:6px}
+.tag{display:inline-block;background:var(--hl);color:var(--ink);border-radius:20px;padding:2px 10px;font:600 12px "Inter",sans-serif;margin-top:8px}
+button.b{background:var(--acc);color:var(--accT);border:0;border-radius:8px;padding:10px 16px;font-weight:700;font-size:15px;cursor:pointer}
+button.g{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:14px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.panel h2{margin:0 0 4px;font-size:20px}
+ul{padding-left:20px;margin:6px 0}
+textarea{width:100%;min-height:330px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,serif;resize:vertical}
+.chk{list-style:none;padding:0;margin:10px 0}
+.chk li{padding:5px 0;font:14px "Inter",sans-serif;color:var(--mute);display:flex;gap:8px}
+.chk li.ok{color:var(--ok)}
+.chk li::before{content:"○";font-weight:700}
+.chk li.ok::before{content:"✓"}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:20px;padding:5px 11px;font:13px "Inter",sans-serif;cursor:pointer}
+.chip:hover{border-color:var(--acc)}
+.score{font:800 34px "Inter",sans-serif;color:var(--acc)}
+.sample{white-space:pre-wrap;background:var(--hl);border-radius:8px;padding:14px;font-size:15px;margin-top:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.hide{display:none}
+.note{font-size:13px;color:var(--mute);font-family:"Inter",sans-serif}
+.mbtn.on{background:var(--acc);color:var(--accT);border-color:var(--acc);font-weight:700}
+.exam #chips,.exam #shw,.exam #smp,.exam #chk,.exam #phr{display:none}
+.rl{list-style:none;padding:0;margin:6px 0;font:14px "Inter",sans-serif}
+.rl li,.cl li{padding:4px 0}
+.cl{list-style:none;padding:0;margin:6px 0;font:14px "Inter",sans-serif}
+.good{color:var(--ok)}
+.bad{color:var(--no)}
+#fbt h3{margin:14px 0 2px;font-size:15px}
+#fbt{border-top:1px solid var(--line);margin-top:12px}
+#fbt:empty{display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Hirely</div>
+  <p class="sub">A practice job board. All companies and jobs are made up. Pick a job and write your letter.</p>
+  <div class="row" role="group" aria-label="Mode"><button class="g mbtn on" id="pm">Practice mode</button><button class="g mbtn" id="em">Exam mode</button></div>
+  <p class="note" id="mnote" style="margin:6px 0 0"></p>
+</header>
+<main>
+<section id="board">
+  <div class="bar">
+    <input id="q" placeholder="Search jobs (e.g. cafe, driver, designer)" aria-label="Search jobs">
+    <select id="lvl" aria-label="Level"><option value="">All levels</option><option>Easy</option><option>Medium</option><option>Hard</option></select>
+    <button class="g" id="rnd">Surprise me</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="work" class="hide">
+  <button class="g" id="back">‹ Back to jobs</button>
+  <div class="two">
+    <div class="panel">
+      <h2 id="jt"></h2>
+      <div class="co" id="jc"></div>
+      <div class="meta" id="jm"></div>
+      <p id="jd"></p>
+      <strong class="sans">They are looking for:</strong>
+      <ul id="jr"></ul>
+      <strong class="sans" id="phr">Phrase bank (click to add)</strong>
+      <div class="chips" id="chips"></div>
+      <div class="row"><button class="g" id="shw">Show a sample letter</button></div>
+      <div class="sample hide" id="smp"></div>
+    </div>
+    <div class="panel">
+      <h2>Your letter</h2>
+      <p class="note" id="nt"></p>
+      <textarea id="ta" aria-label="Your cover letter" placeholder="Dear Hiring Manager,&#10;&#10;I am writing to apply for..."></textarea>
+      <div class="note" id="wc">0 words (aim for 120–250)</div>
+      <ul class="chk" id="chk"></ul>
+      <div class="row"><button class="b" id="fb">Check my letter</button><span class="score" id="sc"></span></div>
+      <div id="fbt"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+var JOBS=[
+{t:"Barista",c:"Blue Heron Café",city:"Leeuwarden",lv:"Easy",d:"We are a small, friendly café near the canal. We need someone who loves coffee and talking to people.",r:["Customer service","Team work","Early mornings","Basic English"],pay:"€13/hour"},
+{t:"Delivery Driver",c:"SwiftBox Logistics",city:"Groningen",lv:"Easy",d:"Deliver parcels around the city in a company van. Training is provided.",r:["Driving licence","On time","Careful and safe","Friendly with customers"],pay:"€15/hour"},
+{t:"Shop Assistant",c:"Tulip & Thread",city:"Zwolle",lv:"Easy",d:"Help customers in our small clothes shop, fill shelves and work at the till.",r:["Customer service","Honest","Weekend work","Interest in fashion"],pay:"€12.50/hour"},
+{t:"Receptionist",c:"Noordwind Hotel",city:"Amsterdam",lv:"Medium",d:"Welcome guests, answer the phone and email, and help with bookings in English and Dutch.",r:["Good English","Organised","Calm under pressure","Computer skills"],pay:"€2,300/month"},
+{t:"Junior Web Designer",c:"Pixelmill Studio",city:"Utrecht",lv:"Medium",d:"Join a creative team building websites for local businesses. You will work with a senior designer.",r:["HTML and CSS","Eye for design","Team work","Learn fast"],pay:"€2,600/month"},
+{t:"Care Assistant",c:"Sunnyside Care Home",city:"Leeuwarden",lv:"Medium",d:"Support older residents with daily activities. A caring, patient person is more important than experience.",r:["Patient and kind","Good listener","Shift work","First aid (a plus)"],pay:"€2,400/month"},
+{t:"Marketing Coordinator",c:"Greenfield Foods",city:"Rotterdam",lv:"Hard",d:"Plan social media campaigns, write newsletters and report results to the marketing manager.",r:["Strong written English","Social media experience","Project planning","Data and reports"],pay:"€3,100/month"},
+{t:"Project Manager",c:"Brightline Engineering",city:"Eindhoven",lv:"Hard",d:"Lead international teams, manage budgets and talk to clients every week. You will report to the director.",r:["3+ years experience","Leadership","Budget management","Fluent English"],pay:"€4,500/month"}
+];
+var STARTS=["I am writing to apply for the position of {t} at {c}.","I would like to apply for the {t} job at {c}, which I saw on Hirely.","I am very interested in the {t} role at {c}."];
+var SKILL=["I have experience in...","One of my strengths is...","In my previous job, I...","I am a hard-working and reliable person.","I work well in a team.","I learn new things quickly."];
+var END=["Thank you for your time and consideration.","I would be happy to come for an interview.","I look forward to hearing from you."];
+var SIGN=["Yours sincerely,","Kind regards,","Best regards,"];
+var cur=null,curI=0,mode="practice",$=function(i){return document.getElementById(i)};
+var RULES=[
+[/\bi\b[^.\n]{0,10}/,"Write I with a capital letter."],
+[/\b(dont|cant|wont|didnt|doesnt|isnt|im|ive)\b/i,"Add an apostrophe (don't, can't, I'm, I've)."],
+[/\balot\b/i,"Write 'a lot' as two words."],
+[/\bam agree\b/i,"Say 'I agree' (no 'am')."],
+[/\blook(ing)? forward to (hear|see|meet|work)\b/i,"After 'look forward to' use -ing: hearing, meeting, working."],
+[/\bi have \d+ years old\b/i,"Say 'I am 20 years old'."],
+[/\b(informations|advices|equipments|furnitures|knowledges)\b/i,"This word has no plural (information, advice...)."],
+[/\b(make|do) an? interview\b/i,"Say 'have an interview'."],
+[/\bfor apply\b/i,"Say 'to apply'."],
+[/\binterested (on|for|about)\b/i,"Say 'interested in'."],
+[/\bi am (very )?interesting\b/i,"Say 'I am interested' (interesting = makes you curious)."],
+[/\bsince \d+ years?\b/i,"Use 'for' with a length of time: for 3 years."],
+[/\bi am work\b/i,"Say 'I work' or 'I am working'."],
+[/\ba (apple|employee|opportunity|interview|hour|experience|organi[sz]ation|important|excellent|enthusiastic|office|assistant|English)\b/i,"Use 'an' before a vowel sound."],
+[/\b(\w+)\s+\1\b/i,"Repeated word."],
+[/[.!?]\s+[a-z]/,"Start every sentence with a capital letter."],
+[/^\s*dear [^\n,]+\n/i,"Add a comma after the name: Dear Mr Smith,"],
+[/^\s*(hi|hello|hey)\b/i,"Use 'Dear ...' to start a formal letter."],
+[/\b(gonna|wanna|gotta|thx|u r)\b/i,"Too informal for a job letter."]
+];
+var SPELL={recieve:"receive",definately:"definitely",experiance:"experience",experiense:"experience",sincerly:"sincerely",sucessful:"successful",responsability:"responsibility",oppurtunity:"opportunity",oportunity:"opportunity",adress:"address",beleive:"believe",seperate:"separate",knowlege:"knowledge",comunicate:"communicate",comunication:"communication",intrested:"interested",intresting:"interesting",carreer:"career",colleage:"colleague",wich:"which",becouse:"because",freind:"friend",enviroment:"environment",teh:"the"};
+function esc(s){return s.replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function corrections(){
+  var t=$("ta").value,out=[],seen={};
+  RULES.forEach(function(r){var m=t.match(r[0]);if(m)out.push({bad:m[0].trim(),fix:r[1]})});
+  (t.toLowerCase().match(/[a-z']+/g)||[]).forEach(function(w){if(SPELL[w]&&!seen[w]){seen[w]=1;out.push({bad:w,fix:"Spelling: "+SPELL[w]})}});
+  if(/dear (sir|madam)/i.test(t)&&/yours sincerely/i.test(t))out.push({bad:"Yours sincerely",fix:"After 'Dear Sir/Madam' use 'Yours faithfully'."});
+  if(/dear (mr|mrs|ms|miss|dr)\.? \w+/i.test(t)&&/yours faithfully/i.test(t))out.push({bad:"Yours faithfully",fix:"After 'Dear Mr/Ms Name' use 'Yours sincerely'."});
+  return out.slice(0,10);
+}
+function applyMode(){
+  var ex=mode==="exam";
+  $("pm").classList.toggle("on",!ex);$("em").classList.toggle("on",ex);
+  $("work").classList.toggle("exam",ex);
+  $("fb").textContent=ex?"Submit letter":"Check my letter";
+  $("ta").spellcheck=!ex;
+  $("mnote").textContent=ex?"Exam: no hints and no corrections until you submit. You can submit once.":"Practice: hints, phrase bank and instant checking.";
+  $("nt").textContent=ex?"Write a full letter for this job. Use what you know.":"Structure: greeting → why you are writing → your skills → closing → sign-off.";
+}
+function setMode(m){mode=m;if(!$("work").classList.contains("hide"))open(curI);else applyMode()}
+
+function render(){
+  var q=$("q").value.toLowerCase(),l=$("lvl").value,h="";
+  JOBS.forEach(function(j,i){
+    if(l&&j.lv!==l)return;
+    if(q&&(j.t+" "+j.c+" "+j.city).toLowerCase().indexOf(q)<0)return;
+    h+='<button class="job" data-i="'+i+'"><h3>'+j.t+'</h3><div class="co">'+j.c+'</div><div class="meta">'+j.city+' · '+j.pay+'</div><span class="tag">'+j.lv+'</span></button>';
+  });
+  $("grid").innerHTML=h||'<p class="note">No jobs match. Try another word.</p>';
+}
+function open(i){
+  cur=JOBS[i];curI=i;
+  $("board").classList.add("hide");$("work").classList.remove("hide");
+  $("jt").textContent=cur.t;$("jc").textContent=cur.c;
+  $("jm").textContent=cur.city+" · "+cur.pay+" · "+cur.lv;
+  $("jd").textContent=cur.d;
+  $("jr").innerHTML=cur.r.map(function(x){return"<li>"+x+"</li>"}).join("");
+  var ch="";
+  STARTS.map(f).concat(SKILL,END,SIGN).forEach(function(p){ch+='<button class="chip" data-p="'+p.replace(/"/g,"&quot;")+'">'+p+'</button>'});
+  $("chips").innerHTML=ch;
+  $("ta").value="";$("ta").readOnly=false;$("fb").disabled=false;$("sc").textContent="";$("fbt").innerHTML="";applyMode();
+  $("smp").classList.add("hide");$("shw").textContent="Show a sample letter";
+  $("smp").textContent=sample();
+  update();window.scrollTo(0,0);
+}
+function f(s){return s.replace("{t}",cur.t).replace("{c}",cur.c)}
+function sample(){
+  return "Dear Hiring Manager,\n\n"+f(STARTS[0])+" I believe my skills and my positive attitude make me a good fit for your team.\n\nIn my last job I worked with customers every day, so I know how to stay calm and polite. I am "+cur.r[0].toLowerCase()+"-minded, reliable and I learn quickly. I also work well with other people, and I am happy to learn from my colleagues.\n\nI am available to start soon and I would be happy to come for an interview. Thank you for your time and consideration.\n\nKind regards,\nYour Name";
+}
+function checks(){
+  var t=$("ta").value,lo=t.toLowerCase(),w=t.trim()?t.trim().split(/\s+/).length:0;
+  var kw=cur.r.some(function(r){return r.toLowerCase().split(/\W+/).some(function(x){return x.length>4&&lo.indexOf(x)>-1})});
+  return [
+    ["Starts with a greeting (Dear ...)",/^\s*dear\s+\S+/i.test(t)],
+    ["Names the job: "+cur.t,lo.indexOf(cur.t.toLowerCase())>-1],
+    ["Names the company: "+cur.c,lo.indexOf(cur.c.toLowerCase())>-1],
+    ["Says why you are writing (apply / interested)",/apply|interested|writing to/.test(lo)],
+    ["Mentions a skill from the job ad",kw],
+    ["Talks about you (I am / I have / I can)",/\bi (am|have|can|work|enjoy|love|learn)/.test(lo)],
+    ["Has a polite closing (Thank you / look forward)",/thank you|look forward|interview/.test(lo)],
+    ["Ends with a sign-off (Kind regards...)",/(yours (sincerely|faithfully)|kind regards|best regards|sincerely)\s*,?\s*\n?\s*\S*/i.test(t)],
+    ["Length is 120–250 words",w>=120&&w<=250]
+  ];
+}
+function update(){
+  var t=$("ta").value,w=t.trim()?t.trim().split(/\s+/).length:0;
+  $("wc").textContent=w+" words (aim for 120–250)";
+  if(mode==="exam"){$("chk").innerHTML="";return}
+  $("chk").innerHTML=checks().map(function(c){return'<li class="'+(c[1]?"ok":"")+'">'+c[0]+"</li>"}).join("");
+}
+function feedback(){
+  var ex=mode==="exam",c=checks(),n=c.filter(function(x){return x[1]}).length,cor=corrections();
+  if(!$("ta").value.trim()){$("fbt").innerHTML='<p class="bad sans">Write your letter first.</p>';return}
+  var pct=Math.max(0,Math.round(n/c.length*70+30-Math.min(30,cor.length*6)));
+  var g=pct>=85?"Excellent":pct>=70?"Good":pct>=60?"Pass":"Not yet. Try again!";
+  var h='<div class="sans"><div class="score">'+pct+'%</div><strong>'+(ex?"Exam result: ":"")+g+'</strong> <span class="note">('+n+'/'+c.length+' parts correct, '+cor.length+' language mistake'+(cor.length===1?"":"s")+')</span></div>';
+  h+='<h3 class="sans">Letter parts</h3><ul class="rl">'+c.map(function(x){return'<li class="'+(x[1]?"good":"bad")+'">'+(x[1]?"✓ Correct: ":"✗ Incorrect: ")+esc(x[0])+'</li>'}).join("")+'</ul>';
+  h+='<h3 class="sans">Language check</h3>';
+  h+=cor.length?'<ul class="cl">'+cor.map(function(x){return'<li><span class="bad">✗ “'+esc(x.bad)+'”</span> → '+esc(x.fix)+'</li>'}).join("")+'</ul>':'<p class="good sans">✓ No mistakes found.</p>';
+  h+='<p class="note">This checker finds common mistakes only. It cannot find every error.</p>';
+  $("fbt").innerHTML=h;
+  if(ex){$("ta").readOnly=true;$("fb").disabled=true}
+}
+$("grid").addEventListener("click",function(e){var b=e.target.closest(".job");if(b)open(+b.dataset.i)});
+$("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(!b)return;var ta=$("ta");ta.value+=(ta.value&&!/\s$/.test(ta.value)?" ":"")+b.dataset.p;ta.focus();update()});
+$("ta").addEventListener("input",update);
+$("fb").onclick=feedback;
+$("pm").onclick=function(){setMode("practice")};
+$("em").onclick=function(){setMode("exam")};
+$("back").onclick=function(){$("work").classList.add("hide");$("board").classList.remove("hide")};
+$("shw").onclick=function(){var s=$("smp"),h=s.classList.toggle("hide");$("shw").textContent=h?"Show a sample letter":"Hide sample letter"};
+$("q").addEventListener("input",render);$("lvl").addEventListener("change",render);
+$("rnd").onclick=function(){open(Math.floor(Math.random()*JOBS.length))};
+render();applyMode();
+</script>
+</body>
+</html>
